@@ -1,12 +1,22 @@
 <head>
-    <title>permits</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <style type="text/css">
-            html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+ <title>Easy example | CartoDB.js</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
+    <style>
+      html, body, #map {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
     </style>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+    <meta name="description" content="">
+
+    <!-- include cartodb.js library -->
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+    
 </head>
 <!--
     ToDo:
@@ -14,6 +24,9 @@
         2. Get access to docs
 -->
 <body>
+
+
+
     <div id="fb-root"></div>
 
 <!--
@@ -50,7 +63,9 @@
 </template>
 
 <template name="map">
-    <div class="map-container" id="map-canvas">
+    <div id="map"></div>
+
+<!--     <div class="map-container" id="map-canvas">
         
         {{#unless geolocationError}}
             {{> googleMap name="map" options=mapOptions}}
@@ -59,7 +74,7 @@
         {{/unless}}
     </div>
 
-</template>
+ --></template>
 
 <template name="fbbtn">
     <div class="fb-like"

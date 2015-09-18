@@ -11,17 +11,33 @@ if (Meteor.isClient) {
     Meteor.subscribe("all-cases");
     
     Meteor.startup(function() {
-        GoogleMaps.load();
-        $("#nav").slideUp("fast");
+
+
+    function main() {
+        cartodb.createVis('map', 'https://djamesobrien.cartodb.com/api/v2/viz/0d00837a-5e2d-11e5-97e4-0e4fddd5de28/viz.json')
+        .done(function(vis, layers) {
+          // layer 0 is the base layer, layer 1 is cartodb layer
+          // setInteraction is disabled by default
+          layers[1].setInteraction(true);
+          layers[1].on('featureOver', function(e, latlng, pos, data) {
+            cartodb.log.log(e, latlng, pos, data);
+          });
+          // you can get the native map to work with it
+          var map = vis.getNativeMap();
+          // now, perform any operations you need
+          // map.setZoom(3);
+          // map.panTo([50.5, 30.5]);
+        })
+        .error(function(err) {
+          console.log(err);
+        });
+      }
+      window.onload = main;
 
         /* set appId for Facebook integration */
         /* First works with ManUnderhill's localhost, second with cfbc3po.meteor.com */
-        /* as registered Facebook Apps */
-        
-        var curHref = location.href;
-        var patt = new RegExp("localhost");
-        curAppId = (patt.test(location.href)) ? '109055546115993':'1459289887712466';
-        $(".fb-like").attr("data-href",curHref);
+        /* as registered Facebook Apps */        
+    
     });
 
     function showDetails(e) {
@@ -56,64 +72,54 @@ if (Meteor.isClient) {
             });
         });       
     };
-/*
-HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON"), function(err,result) {
-        console.log(result.data);
-        cases = result;
-        for (pCase in cases) {
-            console.log("About to insert: ",pCase);
-            cases.insert(pCase);
-            console.log("Inserted!");
-        };
-    });
-*/
 
-    Template.map.helpers({
-        geolocationError: function() {
-            var error = Geolocation.error();
-            return error && error.message;
-        },
-        mapOptions: function() {
-            var latLng = Geolocation.latLng();
-            // Initialize the map once we have the latLng.
-            if (GoogleMaps.loaded() && latLng) {
-                return {
-                    center: new google.maps.LatLng(latLng.lat, latLng.lng),
-                    zoom: MAP_ZOOM
-                };
-            }
-        },
-    });
+
+//     Template.map.helpers({
+//         geolocationError: function() {
+//             var error = Geolocation.error();
+//             return error && error.message;
+//         },
+//         mapOptions: function() {
+//             var latLng = Geolocation.latLng();
+//             // Initialize the map once we have the latLng.
+//             if (GoogleMaps.loaded() && latLng) {
+//                 return {
+//                     center: new google.maps.LatLng(latLng.lat, latLng.lng),
+//                     zoom: MAP_ZOOM
+//                 };
+//             }
+//         },
+//     });
     
-    Template.map.onCreated(function() {
-        GoogleMaps.ready('map', function(map) {
-            var latLng = Geolocation.latLng();
-            var marker = new google.maps.Marker({
-                position: new google.maps.LatLng(latLng.lat, latLng.lng),
-                map: map.instance
-            });
-            map.instance.data.loadGeoJson('/DevelopmentReview.GeoJSON'); // place json file in /public folder
-            map.instance.data.addListener('click', function(event) {
-                showDetails(event);
-            });
+//     Template.map.onCreated(function() {
+//         GoogleMaps.ready('map', function(map) {
+//             var latLng = Geolocation.latLng();
+//             var marker = new google.maps.Marker({
+//                 position: new google.maps.LatLng(latLng.lat, latLng.lng),
+//                 map: map.instance
+//             });
+//             map.instance.data.loadGeoJson('/DevelopmentReview.GeoJSON'); // place json file in /public folder
+//             map.instance.data.addListener('click', function(event) {
+//                 showDetails(event);
+//             });
 
-            /*
-            // Load the GeoJSON information
-            var fs = require ('fs');
-                var cases;
+//             /*
+//             // Load the GeoJSON information
+//             var fs = require ('fs');
+//                 var cases;
 
-            // Read the file and send to the callback
-            fs.readFile('DevelopmentReview.GeoJSON', handleGeoJSON)
+//             // Read the file and send to the callback
+//             fs.readFile('DevelopmentReview.GeoJSON', handleGeoJSON)
 
-            // GeoJSON load callback
-            function handleGeoJSON(err, data) {
-                if (err) throw err;
-                cases = JSON.parse(data);
+//             // GeoJSON load callback
+//             function handleGeoJSON(err, data) {
+//                 if (err) throw err;
+//                 cases = JSON.parse(data);
 
-            };
-*/            
-        });
-    });
+//             };
+// */            
+//         });
+//     });
     
 // c3poDev for localhost:3000 operation
 
