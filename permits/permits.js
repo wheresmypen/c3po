@@ -1,5 +1,18 @@
 // Collection for all the cases defined in the DevelopmentReview.GeoJSON file
 Cases = new Mongo.Collection("cases");
+
+var mapconfig = {
+  "version": "1.3.1",
+  "layers": [{
+    "type": "cartodb",
+    "options": {
+      "cartocss_version": "2.1.1",
+      "cartocss": "#layer { polygon-fill: #FFF; }",
+      "sql": "select * from european_countries_e"
+    }
+  }]
+}
+
 var devCases = {};
 var MAP_ZOOM = 15;
 var curAppId ;
@@ -14,7 +27,7 @@ if (Meteor.isClient) {
 
 
     function main() {
-        cartodb.createVis('map', 'https://djamesobrien.cartodb.com/api/v2/viz/0d00837a-5e2d-11e5-97e4-0e4fddd5de28/viz.json')
+        cartodb.createVis('map', 'https://codeforamerica.cartodb.com/u/codeforboulder/api/v2/viz/84dbec8e-57f4-11e5-9f4c-0e853d047bba/viz.json')
         .done(function(vis, layers) {
           // layer 0 is the base layer, layer 1 is cartodb layer
           // setInteraction is disabled by default
