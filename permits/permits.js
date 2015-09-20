@@ -27,20 +27,79 @@ if (Meteor.isClient) {
 
 
     function main() {
-        cartodb.createVis('map', 'https://codeforamerica.cartodb.com/u/codeforboulder/api/v2/viz/84dbec8e-57f4-11e5-9f4c-0e853d047bba/viz.json')
-        .done(function(vis, layers) {
-          // layer 0 is the base layer, layer 1 is cartodb layer
-          // setInteraction is disabled by default
-          layers[1].setInteraction(true);
-          layers[1].on('featureOver', function(e, latlng, pos, data) {
-            cartodb.log.log(e, latlng, pos, data);
-          });
-          // you can get the native map to work with it
-          var map = vis.getNativeMap();
-          // now, perform any operations you need
-          // map.setZoom(3);
-          // map.panTo([50.5, 30.5]);
+
+        // cartodb.createVis('map', 'http://documentation.cartodb.com/api/v2/viz/2b13c956-e7c1-11e2-806b-5404a6a683d5/viz.json', {
+        //     shareable: true,
+        //     title: true,
+        //     description: true,
+        //     search: true,
+        //     tiles_loader: true,
+        //     center_lat: 0,
+        //     center_lon: 0,
+        //     zoom: 2
+        // })
+        // .done(function(vis, layers) {
+        //   // layer 0 is the base layer, layer 1 is cartodb layer
+        //   // setInteraction is disabled by default
+        //   layers[1].setInteraction(true);
+        //   layers[1].on('featureOver', function(e, latlng, pos, data) {
+        //     cartodb.log.log(e, latlng, pos, data);
+        //   });
+        //   // you can get the native map to work with it
+        //   var map = vis.getNativeMap();
+        //   // now, perform any operations you need
+        //   // map.setZoom(3);
+        //   // map.panTo([50.5, 30.5]);
+        // })
+        // .error(function(err) {
+        //   console.log(err);
+        // });
+
+
+        // create leaflet map
+        var map = L.map('map', { 
+          zoomControl: true,
+          center: [40, -105],
+          zoom: 9
         })
+
+        // add a base layer
+        L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
+          attribution: 'Stamen'
+        }).addTo(map);
+
+        cartodb.createLayer(map, 'https://djamesobrien.cartodb.com/api/v2/viz/0d00837a-5e2d-11e5-97e4-0e4fddd5de28/viz.json')
+        .addTo(map)
+        .on('done', function(layer) {
+           // get sublayer 0 and set the infowindow template
+           var sublayer = layer.getSubLayer(0);
+           sublayer.infowindow.set('template', $('#infowindow_template').html());
+          }).on('error', function() {
+            console.log("some error occurred");
+          })
+                // .done(function(layer) {
+        //     layer.createSubLayer({
+        //         sql: "SELECT * FROM developmentreview_3_merge 1 limit 5",
+        //         cartocss: '#developmentreview_3_merge 1 {marker-fill: #F0F0F0;}'
+        //  });
+       
+        // layer.getSubLayer(0).setSQL("SELECT * FROM developmentreview_3_merge 1 limit 1");
+    // })
+
+        // .done(function(vis, layers) {
+        //     console.log(vis);
+        //   // layer 0 is the base layer, layer 1 is cartodb layer
+        //   // setInteraction is disabled by default
+        //   layers[1].setInteraction(true);
+        //   layers[1].on('featureOver', function(e, latlng, pos, data) {
+        //     cartodb.log.log(e, latlng, pos, data);
+        //   });
+        //   // you can get the native map to work with it
+        //   var map = vis.getNativeMap();
+        //   // now, perform any operations you need
+        //   // map.setZoom(3);
+        //   // map.panTo([50.5, 30.5]);
+        // })
         .error(function(err) {
           console.log(err);
         });
